@@ -1,0 +1,21 @@
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Program.cs" company="Bridgelabz">
+//   Copyright © 2018 Company
+// </copyright>
+// <creator Name="Praveen Kumar Upadhyay"/>
+// --------------------------------------------------------------------------------------------------------------------
+using System;
+
+namespace EmployeePayrollServices
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            /// Creating the employee repository class's instance
+            EmployeeRepository repository = new EmployeeRepository();
+            /// UC1- Ensuring the database connection using the sql connection string
+            repository.EnsureDataBaseConnection();
+        }
+    }
+}
