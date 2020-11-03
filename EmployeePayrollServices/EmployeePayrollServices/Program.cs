@@ -18,6 +18,16 @@ namespace EmployeePayrollServices
             repository.EnsureDataBaseConnection();
             /// UC2 -- Retrieving all the records from the employee payroll services table
             repository.GetAllEmployeesRecords();
+            /// UC3-- Updating the basic pay for the particular employee in the table records
+            var result = repository.UpdateDataForEmployee("Terissa");
+            Console.WriteLine(result ? "Updated Successfully" : "Update Failed");
+            Console.WriteLine("Data After Updating...");
+            repository.GetAllEmployeesRecords();
+            /// UC4 -- Updating the data record using the stored procedure
+            var reultAfteSP = repository.UpdateEmployeeUsingStoredProcedure("Raj", 30000);
+            Console.WriteLine(reultAfteSP ? "Updated Successfully" : "Update Failed");
+            Console.WriteLine("Data After Updating...");
+            repository.GetAllEmployeesRecords();
         }
     }
 }

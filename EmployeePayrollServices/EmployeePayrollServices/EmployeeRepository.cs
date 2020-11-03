@@ -6,6 +6,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 
@@ -25,18 +26,18 @@ namespace EmployeePayrollServices
         /// <summary>
         /// Establishing the connection using the Sql Connection
         /// </summary>
-        public SqlConnection connection = new SqlConnection(connectionString);
+        public static SqlConnection connection = new SqlConnection(connectionString);
         /// <summary>
         /// UC1--Checking for the validity of the connection
         /// </summary>
         public void EnsureDataBaseConnection()
         {
-            this.connection.Open();
+            connection.Open();
             using (connection)
             {
                 Console.WriteLine("The Connection is created");
             }
-            this.connection.Close();
+           connection.Close();
         }
         /// <summary>
         /// UC2-- Getting all the stored records in the employee payroll services table by fetching all the records
@@ -54,7 +55,7 @@ namespace EmployeePayrollServices
                     /// Impementing the command on the connection fetched database table
                     SqlCommand command = new SqlCommand(query, connection);
                     /// Opening the connection to start mapping
-                    this.connection.Open();
+                    connection.Open();
                     /// executing the sql data reader to fetch the records
                     SqlDataReader reader = command.ExecuteReader();
                     /// executing for not null
@@ -99,7 +100,87 @@ namespace EmployeePayrollServices
             /// Alway ensuring the closing of the connection
             finally
             {
-                this.connection.Close();
+                connection.Close();
+            }
+        }
+        /// <summary>
+        /// Function to update the basic pay of the employee
+        /// </summary>
+        /// <param name="empName"></param>
+        /// <returns></returns>
+        public bool UpdateDataForEmployee(string empName)
+        {
+            try
+            {
+                /// Using the connection established
+                using (connection)
+                {
+                    /// Opening the connection
+                    connection.Open();
+                    /// Update query  for the table and binding with the parameter passed
+                    string query = @"update dbo.employee_payroll_services set BasicPay= 30000 where EmployeeName = @parameter";
+                    /// Impementing the command on the connection fetched database table
+                    SqlCommand command = new SqlCommand(query, connection);
+                    /// Binding the parameter to the formal parameters
+                    command.Parameters.AddWithValue("@parameter", empName);
+                    /// Storing the result of the executed query
+                    var result = command.ExecuteNonQuery();
+                    connection.Close();
+                    if (result != 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            /// Catching any type of exception generated during the run time
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+        /// <summary>
+        /// UC4 -- Update the employee payroll data record using a stored procedure
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="newBasicPay"></param>
+        /// <returns></returns>
+        public bool UpdateEmployeeUsingStoredProcedure(string name, int newBasicPay)
+        {
+            try
+            {
+                /// Using the connection established
+                using (connection)
+                {
+                    /// Implementing the stored procedure
+                    SqlCommand command = new SqlCommand("spUpdateSalary", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@salary", newBasicPay);
+                    command.Parameters.AddWithValue("@name", name);
+                    /// Opening the connection
+                    connection.Open();
+                    var result = command.ExecuteNonQuery();
+                    connection.Close();
+                    /// Return the result of the transaction i.e. the dml operation to update data
+                    if (result != 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            /// Catching any type of exception generated during the run time
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                connection.Close();
             }
         }
     }
