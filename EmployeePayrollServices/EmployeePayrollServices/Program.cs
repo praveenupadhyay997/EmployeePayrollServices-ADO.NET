@@ -28,8 +28,6 @@ namespace EmployeePayrollServices
             Console.WriteLine(reultAfteSP ? "Updated Successfully" : "Update Failed");
             Console.WriteLine("Data After Updating...");
             repository.GetAllEmployeesRecords();
-
-
         }
     }
 }
