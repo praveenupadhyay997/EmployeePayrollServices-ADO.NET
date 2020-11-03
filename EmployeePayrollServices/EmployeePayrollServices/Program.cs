@@ -16,6 +16,8 @@ namespace EmployeePayrollServices
             EmployeeRepository repository = new EmployeeRepository();
             /// UC1- Ensuring the database connection using the sql connection string
             repository.EnsureDataBaseConnection();
+            /// UC2 -- Retrieving all the records from the employee payroll services table
+            repository.GetAllEmployeesRecords();
         }
     }
 }
