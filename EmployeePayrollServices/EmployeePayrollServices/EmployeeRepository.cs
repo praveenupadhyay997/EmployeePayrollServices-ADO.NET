@@ -143,5 +143,45 @@ namespace EmployeePayrollServices
                 connection.Close();
             }
         }
+        /// <summary>
+        /// UC4 -- Update the employee payroll data record using a stored procedure
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="newBasicPay"></param>
+        /// <returns></returns>
+        public bool UpdateEmployeeUsingStoredProcedure(string name, int newBasicPay)
+        {
+            try
+            {
+                /// Using the connection established
+                using (connection)
+                {
+                    /// Implementing the stored procedure
+                    SqlCommand command = new SqlCommand("spUpdateSalary", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@salary", newBasicPay);
+                    command.Parameters.AddWithValue("@name", name);
+                    /// Opening the connection
+                    connection.Open();
+                    var result = command.ExecuteNonQuery();
+                    connection.Close();
+                    /// Return the result of the transaction i.e. the dml operation to update data
+                    if (result != 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            /// Catching any type of exception generated during the run time
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
     }
 }
