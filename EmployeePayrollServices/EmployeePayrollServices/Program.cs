@@ -28,6 +28,9 @@ namespace EmployeePayrollServices
             Console.WriteLine(reultAfteSP ? "Updated Successfully" : "Update Failed");
             Console.WriteLine("Data After Updating...");
             repository.GetAllEmployeesRecords();
+            Console.Clear();
+            Console.WriteLine("******************Data for the Joining in between date query*****************");
+            repository.GetDetailOfEmployeeStartingBetweenDate(Convert.ToDateTime("01 - 03 - 2019"));
         }
     }
 }
