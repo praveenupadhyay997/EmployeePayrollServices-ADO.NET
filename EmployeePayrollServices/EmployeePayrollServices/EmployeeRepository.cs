@@ -266,5 +266,65 @@ namespace EmployeePayrollServices
                 connectionToServer.Close();
             }
         }
+        /// <summary>
+        /// UC6 -- Function to get the detail of the employee salary
+        /// </summary>
+        /// <param name="gender"></param>
+        public void GetTheDetailOfSalaryForPassedGender(string gender)
+        {
+            /// Creates a new connection for every method to avoid "ConnectionString property not initialized" exception
+            DBConnection dbc = new DBConnection();
+            /// Calling the Get connection method to establish the connection to the Sql Server
+            connectionToServer = dbc.GetConnection();
+            try
+            {
+                /// Using the connection established
+                using (connectionToServer)
+                {
+                    /// Query to get the data from the table
+                    string query = @"select Gender,count(BasicPay) as EmpCount,min(BasicPay) as MinSalary,max(BasicPay) 
+                                   as MaxSalary,sum(BasicPay) as SalarySum,avg(BasicPay) as AvgSalary from dbo.employee_payroll_services
+                                   where Gender=@parameter group by Gender";
+                    /// Impementing the command on the connection fetched database table
+                    SqlCommand command = new SqlCommand(query, connectionToServer);
+                    /// Binding the parameter to the formal parameters
+                    command.Parameters.AddWithValue("@parameter", gender);
+                    /// Opening the connection to start mapping
+                    connectionToServer.Open();
+                    /// executing the sql data reader to fetch the records
+                    SqlDataReader reader = command.ExecuteReader();
+                    /// executing for not null
+                    if (reader.HasRows)
+                    {
+                        /// Moving to the next record from the table
+                        /// Mapping the data to the retrieved data from executing the query on the table
+                        while (reader.Read())
+                        {
+                            int empCount = reader.GetInt32(1);
+                            double minSalary = reader.GetDouble(2);
+                            double maxSalary = reader.GetDouble(3);
+                            double sumOfSalary = reader.GetDouble(4);
+                            double avgSalary = reader.GetDouble(5);
+                            Console.WriteLine($"Gender:{gender}\nEmployee Count:{empCount}\nMinimum Salary:{minSalary}\nMaximum Salary:{maxSalary}\n" +
+                                $"Total Salary for {gender} :{sumOfSalary}\n" +$"Average Salary:{avgSalary}");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("No Data found");
+                    }
+                    reader.Close();
+                }
+            }
+            /// Catching any type of exception generated during the run time
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                connectionToServer.Close();
+            }
+        }
     }
 }
