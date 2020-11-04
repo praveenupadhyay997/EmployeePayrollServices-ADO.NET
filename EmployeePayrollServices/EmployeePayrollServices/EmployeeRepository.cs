@@ -19,43 +19,47 @@ namespace EmployeePayrollServices
     /// </summary>
     public class EmployeeRepository
     {
+        
         /// <summary>
-        /// Specifying the connection string from the sql server connection
+        /// For ensuring the established connection using the Sql Connection specifying the property
         /// </summary>
-        public static string connectionString = @"Data Source=LAPTOP-EIJJR8OV\TEW_SQLEXPRESS;Initial Catalog = payroll_services; User ID=PraveenUpadhyay;Password=aircel1234@;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-        /// <summary>
-        /// Establishing the connection using the Sql Connection
-        /// </summary>
-        public static SqlConnection connection = new SqlConnection(connectionString);
+        public static SqlConnection connectionToServer { get; set; }
         /// <summary>
         /// UC1--Checking for the validity of the connection
         /// </summary>
         public void EnsureDataBaseConnection()
         {
-            connection.Open();
-            using (connection)
+            /// Creates a new connection for every method to avoid "ConnectionString property not initialized" exception
+            DBConnection dbc = new DBConnection();
+            /// Calling the Get connection method to establish the connection to the Sql Server
+            connectionToServer = dbc.GetConnection();
+            using (connectionToServer)
             {
                 Console.WriteLine("The Connection is created");
             }
-           connection.Close();
+           connectionToServer.Close();
         }
         /// <summary>
         /// UC2-- Getting all the stored records in the employee payroll services table by fetching all the records
         /// </summary>
         public void GetAllEmployeesRecords()
         {
+            /// Creates a new connection for every method to avoid "ConnectionString property not initialized" exception
+            DBConnection dbc = new DBConnection();
+            /// Calling the Get connection method to establish the connection to the Sql Server
+            connectionToServer = dbc.GetConnection();
             /// Creating the employee model class object
             EmployeeModel employeeObject = new EmployeeModel();
             try
             {
-                using (connection)
+                using (connectionToServer)
                 {
                     /// Query to get all the data from the table
                     string query = @"select * from dbo.employee_payroll_services";
                     /// Impementing the command on the connection fetched database table
-                    SqlCommand command = new SqlCommand(query, connection);
+                    SqlCommand command = new SqlCommand(query, connectionToServer);
                     /// Opening the connection to start mapping
-                    connection.Open();
+                    connectionToServer.Open();
                     /// executing the sql data reader to fetch the records
                     SqlDataReader reader = command.ExecuteReader();
                     /// executing for not null
@@ -100,7 +104,7 @@ namespace EmployeePayrollServices
             /// Alway ensuring the closing of the connection
             finally
             {
-                connection.Close();
+                connectionToServer.Close();
             }
         }
         /// <summary>
@@ -110,22 +114,26 @@ namespace EmployeePayrollServices
         /// <returns></returns>
         public bool UpdateDataForEmployee(string empName)
         {
+            /// Creates a new connection for every method to avoid "ConnectionString property not initialized" exception
+            DBConnection dbc = new DBConnection();
+            /// Calling the Get connection method to establish the connection to the Sql Server
+            connectionToServer = dbc.GetConnection();
             try
             {
                 /// Using the connection established
-                using (connection)
+                using (connectionToServer)
                 {
                     /// Opening the connection
-                    connection.Open();
+                    connectionToServer.Open();
                     /// Update query  for the table and binding with the parameter passed
                     string query = @"update dbo.employee_payroll_services set BasicPay= 30000 where EmployeeName = @parameter";
                     /// Impementing the command on the connection fetched database table
-                    SqlCommand command = new SqlCommand(query, connection);
+                    SqlCommand command = new SqlCommand(query, connectionToServer);
                     /// Binding the parameter to the formal parameters
                     command.Parameters.AddWithValue("@parameter", empName);
                     /// Storing the result of the executed query
                     var result = command.ExecuteNonQuery();
-                    connection.Close();
+                    connectionToServer.Close();
                     if (result != 0)
                     {
                         return true;
@@ -140,7 +148,7 @@ namespace EmployeePayrollServices
             }
             finally
             {
-                connection.Close();
+                connectionToServer.Close();
             }
         }
         /// <summary>
@@ -151,20 +159,24 @@ namespace EmployeePayrollServices
         /// <returns></returns>
         public bool UpdateEmployeeUsingStoredProcedure(string name, int newBasicPay)
         {
+            /// Creates a new connection for every method to avoid "ConnectionString property not initialized" exception
+            DBConnection dbc = new DBConnection();
+            /// Calling the Get connection method to establish the connection to the Sql Server
+            connectionToServer = dbc.GetConnection();
             try
             {
                 /// Using the connection established
-                using (connection)
+                using (connectionToServer)
                 {
                     /// Implementing the stored procedure
-                    SqlCommand command = new SqlCommand("spUpdateSalary", connection);
+                    SqlCommand command = new SqlCommand("spUpdateSalary", connectionToServer);
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@salary", newBasicPay);
                     command.Parameters.AddWithValue("@name", name);
                     /// Opening the connection
-                    connection.Open();
+                    connectionToServer.Open();
                     var result = command.ExecuteNonQuery();
-                    connection.Close();
+                    connectionToServer.Close();
                     /// Return the result of the transaction i.e. the dml operation to update data
                     if (result != 0)
                     {
@@ -180,8 +192,9 @@ namespace EmployeePayrollServices
             }
             finally
             {
-                connection.Close();
+                connectionToServer.Close();
             }
         }
+        
     }
 }
