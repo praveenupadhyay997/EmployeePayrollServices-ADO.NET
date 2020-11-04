@@ -195,6 +195,10 @@ namespace EmployeePayrollServices
                 connectionToServer.Close();
             }
         }
+        /// <summary>
+        /// UC5 -- Function to execute the query to print the detail of the employee joining between a given date and current date
+        /// </summary>
+        /// <param name="date"></param>
         public void GetDetailOfEmployeeStartingBetweenDate(DateTime date)
         {
             /// Creates a new connection for every method to avoid "ConnectionString property not initialized" exception
