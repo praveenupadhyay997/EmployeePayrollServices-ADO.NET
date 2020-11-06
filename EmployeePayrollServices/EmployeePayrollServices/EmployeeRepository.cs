@@ -326,5 +326,45 @@ namespace EmployeePayrollServices
                 connectionToServer.Close();
             }
         }
+        /// <summary>
+        /// Method For TC 1 -- Fetching the updated salary from database.
+        /// </summary>
+        /// <param name="empName">Name of the emp.</param>
+        /// <returns></returns>
+        /// <exception cref="System.Exception"></exception>
+        public double ReadUpdatedSalaryFromDatabase(string employeeName)
+        {
+            /// Creates a new connection for every method to avoid "ConnectionString property not initialized" exception
+            DBConnection dbc = new DBConnection();
+            /// Calling the Get connection method to establish the connection to the Sql Server
+            connectionToServer = dbc.GetConnection();
+            /// Block to catch any exceptions when produced during the execution
+            try
+            {
+                /// Using the connection established
+                using (connectionToServer)
+                {
+                    /// Query to get the data from the table
+                    string query = @"select BasicPay from dbo.employee_payroll_services where EmployeeName =@parameter";
+                    /// Impementing the command on the connection fetched database table
+                    SqlCommand command = new SqlCommand(query, connectionToServer);
+                    /// Opening the connection to start mapping
+                    connectionToServer.Open();
+                    /// Binding the parameter to the formal parameters
+                    command.Parameters.AddWithValue("@parameter", employeeName);
+                    /// Returning the read value executed by the query
+                    return (Double)command.ExecuteScalar();
+                }
+            }
+            /// Catching any type of exception generated during the run time
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                    connectionToServer.Close();
+            }
+        }
     }
 }
