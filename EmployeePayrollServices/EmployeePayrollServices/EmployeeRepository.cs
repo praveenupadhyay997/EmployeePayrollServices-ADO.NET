@@ -366,5 +366,86 @@ namespace EmployeePayrollServices
                     connectionToServer.Close();
             }
         }
+        /// <summary>
+        /// Method For TC 2- Read the added data to the employee payroll table
+        /// </summary>
+        /// <param name="employeeName"></param>
+        /// <returns></returns>
+        public bool ReadDataAddedToTheDatabase(string employeeName)
+        {
+            /// Creates a new connection for every method to avoid "ConnectionString property not initialized" exception
+            DBConnection dbc = new DBConnection();
+            /// Calling the Get connection method to establish the connection to the Sql Server
+            connectionToServer = dbc.GetConnection();
+            /// Block to catch any exceptions when produced during the execution
+            try
+            {
+                /// Using the connection established
+                using (connectionToServer)
+                {
+                    /// Query to get the data from the table
+                    string query = @"select EmployeeName from dbo.employee_payroll_services where EmployeeName =@parameter";
+                    /// Impementing the command on the connection fetched database table
+                    SqlCommand command = new SqlCommand(query, connectionToServer);
+                    /// Opening the connection to start mapping
+                    connectionToServer.Open();
+                    /// Binding the parameter to the formal parameters
+                    command.Parameters.AddWithValue("@parameter", employeeName);
+                    /// Returning the read value executed by the query
+                    return ((String)command.ExecuteScalar() == employeeName);
+                }
+            }
+            /// Catching any type of exception generated during the run time
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                connectionToServer.Close();
+            }
+        }
+        /// <summary>
+        /// UC7 -- Adding to the Employee payroll Services and then testing
+        /// </summary>
+        /// <param name="employeeModel"></param>
+        public void AddDataToEmployeePayrollDB(EmployeeModel employeeModel)
+        {
+            /// Creates a new connection for every method to avoid "ConnectionString property not initialized" exception
+            DBConnection dbc = new DBConnection();
+            /// Calling the Get connection method to establish the connection to the Sql Server
+            connectionToServer = dbc.GetConnection();
+            try
+            {
+                /// Using the connection established
+                using (connectionToServer)
+                {
+                    /// Implementing the stored procedure
+                    SqlCommand command = new SqlCommand("dbo.AddEmployeeDetails", connectionToServer);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@EmpName",employeeModel.EmployeeName);
+                    command.Parameters.AddWithValue("@basic_pay", employeeModel.BasicPay);
+                    command.Parameters.AddWithValue("@start_date", employeeModel.StartDate);
+                    command.Parameters.AddWithValue("@PhoneNumber", employeeModel.PhoneNumber);
+                    command.Parameters.AddWithValue("@address", employeeModel.Address);
+                    command.Parameters.AddWithValue("@department", employeeModel.Department);
+                    command.Parameters.AddWithValue("@gender", employeeModel.Gender);
+
+                    /// Opening the connection
+                    connectionToServer.Open();
+                    command.ExecuteNonQuery();
+                    connectionToServer.Close();
+                }
+            }
+            /// Catching any type of exception generated during the run time
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                connectionToServer.Close();
+            }
+        }
     }
 }

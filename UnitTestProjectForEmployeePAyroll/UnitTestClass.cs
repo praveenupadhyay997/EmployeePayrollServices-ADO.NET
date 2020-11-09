@@ -30,5 +30,20 @@ namespace UnitTestProjectForEmployeePAyroll
             //Assert
             Assert.AreEqual(basicPay, expectedPay);
         }
+        /// <summary>
+        /// TC 2 - Check whether the data is added to the database or not
+        /// </summary>
+        [TestMethod]
+        public void GivenEmployeeName_ReturnDataEnteredOrNot()
+        {
+            //Arrange - Passing the inputs and initialising the instance of the executing class
+            string employeeName = "Vishwanathan";
+            bool expected = true;
+            EmployeeRepository empRepository = new EmployeeRepository();
+            //Act - Getting the expected returned value of the passed employee
+            bool actualPrescence = empRepository.ReadDataAddedToTheDatabase(employeeName);
+            //Assert
+            Assert.AreEqual(expected, actualPrescence);
+        }
     }
 }
