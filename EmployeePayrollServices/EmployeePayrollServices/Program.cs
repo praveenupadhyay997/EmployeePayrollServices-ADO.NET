@@ -41,6 +41,8 @@ namespace EmployeePayrollServices
             /// Creating the ER Diagram repository class's instance
             ERDiagramRepository diagramRepository = new ERDiagramRepository();
             diagramRepository.RetrieveAllTheRecordsFromTheDataBase();
+            /// UC10 -- Ensuring the other Test Case Working Properly
+            diagramRepository.EnsuringOtherCasesWorkProperly();
         }
         static void Main(string[] args)
         {
