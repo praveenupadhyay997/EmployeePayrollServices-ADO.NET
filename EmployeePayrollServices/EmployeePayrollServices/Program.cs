@@ -10,6 +10,9 @@ namespace EmployeePayrollServices
 {
     class Program
     {
+        /// <summary>
+        /// Method to define the properties to add the data to the database
+        /// </summary>
         public static void AddToDatabaseMethod()
         {
             /// Creating the employee repository class's instance
@@ -29,6 +32,15 @@ namespace EmployeePayrollServices
             repository.AddDataToEmployeePayrollDB(employeeModel);
             /// Adding to the ER- Diagram implementing Database Schema
             diagramRepository.AddToMultipleTableAndPayrollTableAtOnce(employeeModel);
+        }
+        /// <summary>
+        /// Method to retrieve the entire data from the database in ER Model
+        /// </summary>
+        public static void RetrieveAllDataFromDatabase()
+        {
+            /// Creating the ER Diagram repository class's instance
+            ERDiagramRepository diagramRepository = new ERDiagramRepository();
+            diagramRepository.RetrieveAllTheRecordsFromTheDataBase();
         }
         static void Main(string[] args)
         {
@@ -64,6 +76,8 @@ namespace EmployeePayrollServices
             /// UC6 -- Add to the address book payroll servies schema and then
             Console.WriteLine("******************Adding the detail for an employee to the Database*****************");
             AddToDatabaseMethod();
+            /// UC9 -- Retrieving all the records from the employee payroll services table using the ER Model
+            RetrieveAllDataFromDatabase();
             Console.ReadKey();
         }
     }
